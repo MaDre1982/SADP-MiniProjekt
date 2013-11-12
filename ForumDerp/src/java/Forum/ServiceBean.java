@@ -7,6 +7,7 @@
 package Forum;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -38,15 +39,6 @@ public class ServiceBean {
         return new ArrayList<User>(users);
     }
     
-//    public void addMessage(Category cat, String emne, User user){
-//        Message m = new Message(cat, emne, user);
-//        cat.addMessage(m);
-//    }
-//    
-//    public void deleteMessage(Category cat, Message m){
-//        cat.deleteMessage(m);
-//    }
-    
     public void addUser(User u){
         if(!users.contains(u)){
             users.add(u);
@@ -54,7 +46,46 @@ public class ServiceBean {
     }
     
     public void deleteUser(User user){
-        //alle messages og comments af denne user skal også slettes
+        Iterator<User> itr = users.iterator();
+        while (itr.hasNext()) {
+            User u = itr.next();
+            if(u.equals(user)){
+                deleteCategories(u);
+                itr.remove();
+            }
+        }
+    }
+    
+    public void deleteCategories(User user){
+        Iterator<Category> itr = categories.iterator();
+        while(itr.hasNext()){
+            Category cat = itr.next();
+            if(cat.getUser().equals(user)){
+                deleteMessages(user,cat);
+                itr.remove();
+            }
+        }
+    }
+    
+    public void deleteMessages(User user,Category category){
+        Iterator<Message> itr = category.getMessages().iterator();
+        while(itr.hasNext()){
+            Message mes = itr.next();
+            if(mes.getUser().equals(user)){
+                deleteComments(user,mes);
+                itr.remove();
+            }
+        }
+    }
+    
+    public void deleteComments(User user, Message message){
+        Iterator<Comment> itr = message.getComments().iterator();
+        while(itr.hasNext()){
+            Comment com = itr.next();
+            if(com.getUser().equals(user)){
+                itr.remove();
+            }
+        }
     }
     
     public void addCategory(Category category){

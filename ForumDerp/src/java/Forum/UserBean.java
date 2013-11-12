@@ -25,7 +25,7 @@ public class UserBean implements Serializable {
     //User
     private User user = new User();
     private User validUser;
-    private User selectedUser;
+    private String selectedUser;
     private String userName;
     private String userPassword;
     //Category
@@ -36,9 +36,11 @@ public class UserBean implements Serializable {
     private String messageEmne;
     //Comment
     private String commentText = "";
+    
+    private boolean loggedIn=false;
+   
     @Inject
     private ServiceBean service;
-    private boolean loggedIn = false;
 
     public UserBean() {
     }
@@ -91,7 +93,6 @@ public class UserBean implements Serializable {
 
     public String selectMessage(Message message) {
         this.selectedMessage = message;
-//        tempUser = selectedUser.copy();
         return "message";
     }
 
@@ -150,24 +151,47 @@ public class UserBean implements Serializable {
     }
 
     public User register() {
-        service.addUser(new User(userName, userPassword, false));
-        userName = "";
-        userPassword = "";
-        //newly added
-        FacesContext.getCurrentInstance().addMessage("register", new FacesMessage("Succes!"));
+        boolean found = false;
+        int i = 0;
+        while (!found && i < service.getUsers().size()) {
+            if (service.getUsers().get(i).getName().equals(userName)) {
+                found = true;
+                FacesContext.getCurrentInstance().addMessage("name", new FacesMessage("Username already in use!"));
+
+            } else {
+                i++;
+            }
+        }
+        if (!found) {
+            service.addUser(new User(userName, userPassword, false));
+            userName = "";
+            userPassword = "";
+            FacesContext.getCurrentInstance().addMessage("register", new FacesMessage("Succes!"));
+        }
+
         return null;
     }
 
-    public User getSelectedUser() {
+    public String getSelectedUser() {
         return selectedUser;
     }
 
-    public void setSelectedUser(User selectedUser) {
+    public void setSelectedUser(String selectedUser) {
         this.selectedUser = selectedUser;
     }
 
     public User getValidUser() {
         return validUser;
+    }
+
+    public String deleteUser() {
+        for (User u : getUsers()) {
+            if (u.getName().equals(selectedUser)) {
+                service.deleteUser(u);
+                break;
+            }
+        }
+        return null;
     }
 
     public List<User> getUsers() {
@@ -180,22 +204,20 @@ public class UserBean implements Serializable {
         return temp;
     }
 
-    public String login() {
+    public String login(){
         validUser = service.getValidUser(user);
-        if (validUser != null) {
-            loggedIn = true;
-            //TODO
-            // user.setIsShown();
-            // user.update(validUser);
+        if (validUser != null){
+             loggedIn = true;
+             user.update(validUser);
             return "Welcome";
-        } else {
-            //TODO - navigations regler til ugyldig bruger
         }
-        return null;
-
+        else{
+            user = new User();
+            return "Error";
+        }
     }
     
-      public String logout(){
+     public String logout() {
         loggedIn = false;
         return "index?faces-redirect=true";
     }

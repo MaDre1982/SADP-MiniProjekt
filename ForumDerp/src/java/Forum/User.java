@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Forum;
 
 /**
@@ -11,11 +10,10 @@ package Forum;
  * @author Martin
  */
 public class User {
-    
+
     private String name;
     private String passWord;
     private boolean admin;
-   
 
     /**
      * Creates a new instance of UserBean
@@ -25,9 +23,8 @@ public class User {
         this.passWord = passWord;
         this.admin = admin;
     }
-    
-    public User(){
-        
+
+    public User() {
     }
 
     public String getName() {
@@ -53,11 +50,15 @@ public class User {
     public void setAdmin(boolean admin) {
         this.admin = admin;
     }
-    
+
+    public void update(User user) {
+        this.name = user.name;
+        this.passWord = user.passWord;
+        this.admin = user.admin;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
-    
-  
 }

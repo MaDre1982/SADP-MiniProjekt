@@ -34,10 +34,10 @@ and open the template in the editor.
         <h:form rendered="#{userBean.validUser.admin}">
             Brugere:
             <h:selectOneRadio value="#{userBean.selectedUser}">
-                <f:selectItems value="#{userBean.users}" />
+                <f:selectItems value="#{userBean.users}"/>
             </h:selectOneRadio>
             <br/>
-            <h:commandButton value="Delete user" action="Delete"/>
+            <h:commandButton value="Delete user" action="#{userBean.deleteUser()}"/>
         </h:form>
         <h:form>
             <h:commandButton value="Logout" action="#{userBean.logout}"/>
