@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Welcome</title>
+    </h:head>
+    <body>
+        <h1 style="font-family: fantasy">Welcome to this forum</h1>
+        <h:form>
+            <h:inputText value="#{userBean.categoryName}">
+                <f:validateLength minimum="1"/>
+            </h:inputText>
+            <br/>
+            <h:commandButton value="Create category" action="#{userBean.createCategory}"/>
+        </h:form>
+        <br/>
+        <h:form>
+            <h:dataTable id="output" value="#{userBean.categories}" var="cat" border="1">
+                <h:column>
+                    <f:facet name="header">
+                        Kategorier
+                    </f:facet>
+                    <h:commandLink value="#{cat.name}" action="#{userBean.selectCategory(cat)}"/>
+                </h:column>
+            </h:dataTable>
+        </h:form>
+        <br/>
+        <h:form rendered="#{userBean.validUser.admin}">
+            Brugere:
+            <h:selectOneRadio value="#{userBean.selectedUser}">
+                <f:selectItems value="#{userBean.users}" />
+            </h:selectOneRadio>
+            <br/>
+            <h:commandButton value="Delete user" action="Delete"/>
+        </h:form>
+        <h:form>
+            <h:commandButton value="Logout" action="#{userBean.logout}"/>
+        </h:form>
+    </body>
+</html>
